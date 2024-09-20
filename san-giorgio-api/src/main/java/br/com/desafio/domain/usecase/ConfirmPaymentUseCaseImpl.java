@@ -1,10 +1,11 @@
 package br.com.desafio.domain.usecase;
 
-import br.com.desafio.controller.SQSClient;
+import br.com.desafio.domain.config.SQSClient;
 import br.com.desafio.domain.model.PaymentItemModel;
 import br.com.desafio.domain.model.PaymentModel;
 import br.com.desafio.exception.Exceptions.ClientNotFoundException;
 import br.com.desafio.exception.Exceptions.PaymentItemNotFoundException;
+import br.com.desafio.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,16 +24,16 @@ public class ConfirmPaymentUseCaseImpl implements ConfirmPaymentUseCase {
             PaymentItemModel.builder().paymentId("P002").paymentValue(new BigDecimal("200.00")).build(),
             PaymentItemModel.builder().paymentId("P003").paymentValue(new BigDecimal("150.00")).build()
     );
+    private final PaymentRepository paymentRepository;
     private final SQSClient sqsClient;
 
     @Override
     public PaymentModel confirm(PaymentModel paymentModel) {
-        if (!VALID_CLIENT_IDS.contains(paymentModel.getClientId())) {
-            throw new ClientNotFoundException("Client ID " + paymentModel.getClientId() + " not found.");
-        }
+        PaymentModel storedPayment = paymentRepository.findByClientId(paymentModel.getClientId())
+                .orElseThrow(() -> new ClientNotFoundException("Client ID " + paymentModel.getClientId() + " not found."));
 
         for (PaymentItemModel item : paymentModel.getPaymentItems()) {
-            Optional<PaymentItemModel> matchedPaymentItem = findPaymentById(item.getPaymentId());
+            Optional<PaymentItemModel> matchedPaymentItem = findPaymentItemById(storedPayment, item.getPaymentId());
 
             if (matchedPaymentItem.isEmpty()) {
                 throw new PaymentItemNotFoundException("Payment ID " + item.getPaymentId() + " not found.");
@@ -55,8 +56,8 @@ public class ConfirmPaymentUseCaseImpl implements ConfirmPaymentUseCase {
         return paymentModel;
     }
 
-    private Optional<PaymentItemModel> findPaymentById(String paymentId) {
-        return MOCKED_PAYMENT_ITEMS_DB.stream()
+    private Optional<PaymentItemModel> findPaymentItemById(PaymentModel paymentModel, String paymentId) {
+        return paymentModel.getPaymentItems().stream()
                 .filter(paymentItem -> paymentItem.getPaymentId().equals(paymentId))
                 .findFirst();
     }

@@ -13,7 +13,7 @@ import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class PaymentMapperTest {
+class PaymentMapperTest {
 
     private PaymentMapper paymentMapper;
 
@@ -24,7 +24,6 @@ public class PaymentMapperTest {
 
     @Test
     void testToPaymentModel() {
-        // Arrange
         PaymentItem paymentItem1 = PaymentItem.builder()
                 .paymentId("123")
                 .paymentValue(BigDecimal.valueOf(100.00))
@@ -35,10 +34,8 @@ public class PaymentMapperTest {
                 .paymentItems(singletonList(paymentItem1))
                 .build();
 
-        // Act
         PaymentModel paymentModel = paymentMapper.toPaymentModel(payment);
 
-        // Assert
         assertNotNull(paymentModel);
         assertEquals("client123", paymentModel.getClientId());
         assertEquals(1, paymentModel.getPaymentItems().size());
@@ -49,7 +46,7 @@ public class PaymentMapperTest {
 
     @Test
     void testToPayment() {
-        // Arrange
+
         PaymentItemModel paymentItemModel1 = PaymentItemModel.builder()
                 .paymentId("123")
                 .paymentValue(BigDecimal.valueOf(100.00))
@@ -60,10 +57,8 @@ public class PaymentMapperTest {
                 .paymentItems(singletonList(paymentItemModel1))
                 .build();
 
-        // Act
         Payment payment = paymentMapper.toPayment(paymentModel);
 
-        // Assert
         assertNotNull(payment);
         assertEquals("client123", payment.getClientId());
         assertEquals(1, payment.getPaymentItems().size());

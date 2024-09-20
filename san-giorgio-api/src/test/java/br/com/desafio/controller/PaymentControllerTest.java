@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(PaymentController.class)
-public class PaymentControllerTest {
+class PaymentControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -75,7 +75,6 @@ public class PaymentControllerTest {
                         .content(objectMapper.writeValueAsString(paymentRequest)))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(APPLICATION_JSON));
-        // .andExpect(content().json("{\"message\":\"Client not found\"}"));
 
         verify(paymentMapper).toPaymentModel(paymentRequest);
         verify(confirmPaymentUseCase).confirm(paymentModel);
@@ -91,7 +90,6 @@ public class PaymentControllerTest {
                         .content(objectMapper.writeValueAsString(paymentRequest)))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(APPLICATION_JSON));
-        //.andExpect(content().json("{\"message\":\"Payment item not found\"}"));
 
         verify(paymentMapper).toPaymentModel(paymentRequest);
         verify(confirmPaymentUseCase).confirm(paymentModel);
@@ -107,7 +105,6 @@ public class PaymentControllerTest {
                         .content(objectMapper.writeValueAsString(paymentRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(APPLICATION_JSON));
-        //.andExpect(content().json("{\"message\":\"Invalid payment\"}"));
 
         verify(paymentMapper).toPaymentModel(paymentRequest);
         verify(confirmPaymentUseCase).confirm(paymentModel);
