@@ -77,4 +77,82 @@ class PaymentControllerIntegrationTest {
                 .andExpect(jsonPath("$.payment_items[0].payment_value").value(100.00))
                 .andExpect(jsonPath("$.payment_items[0].payment_status").value("TOTAL"));
     }
+
+    @Test
+    void testSetPayments_SuccessForExcess() throws Exception {
+
+        Payment paymentRequest = Payment.builder()
+                .clientId("C001")
+                .paymentItems(Collections.singletonList(PaymentItem.builder()
+                        .paymentId("P001")
+                        .paymentValue(new BigDecimal("150.00"))
+                        .build()))
+                .build();
+
+        mockMvc.perform(post("/api/payments")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(paymentRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.client_id").value("C001"))
+                .andExpect(jsonPath("$.payment_items[0].payment_id").value("P001"))
+                .andExpect(jsonPath("$.payment_items[0].payment_value").value(150.00))
+                .andExpect(jsonPath("$.payment_items[0].payment_status").value("EXCESS"));
+    }
+
+    @Test
+    void testSetPayments_SuccessForPartial() throws Exception {
+
+        Payment paymentRequest = Payment.builder()
+                .clientId("C001")
+                .paymentItems(Collections.singletonList(PaymentItem.builder()
+                        .paymentId("P001")
+                        .paymentValue(new BigDecimal("50.00"))
+                        .build()))
+                .build();
+
+        mockMvc.perform(post("/api/payments")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(paymentRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.client_id").value("C001"))
+                .andExpect(jsonPath("$.payment_items[0].payment_id").value("P001"))
+                .andExpect(jsonPath("$.payment_items[0].payment_value").value(50.00))
+                .andExpect(jsonPath("$.payment_items[0].payment_status").value("PARTIAL"));
+    }
+
+    @Test
+    void testSetPayments_FailureForClientNotFound() throws Exception {
+
+        Payment paymentRequest = Payment.builder()
+                .clientId("dummy")
+                .paymentItems(Collections.singletonList(PaymentItem.builder()
+                        .paymentId("P001")
+                        .paymentValue(new BigDecimal("50.00"))
+                        .build()))
+                .build();
+
+        mockMvc.perform(post("/api/payments")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(paymentRequest)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("errorMessage").value("Client ID dummy not found."));
+    }
+
+    @Test
+    void testSetPayments_FailureForPaymentItemNotFound() throws Exception {
+
+        Payment paymentRequest = Payment.builder()
+                .clientId("C001")
+                .paymentItems(Collections.singletonList(PaymentItem.builder()
+                        .paymentId("dummy")
+                        .paymentValue(new BigDecimal("50.00"))
+                        .build()))
+                .build();
+
+        mockMvc.perform(post("/api/payments")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(paymentRequest)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("errorMessage").value("Payment ID dummy not found."));
+    }
 }
