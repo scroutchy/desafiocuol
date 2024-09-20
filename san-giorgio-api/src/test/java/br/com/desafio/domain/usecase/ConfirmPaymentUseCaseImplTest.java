@@ -34,7 +34,6 @@ class ConfirmPaymentUseCaseImplTest {
                 .paymentItems(Collections.singletonList(paymentItemModel))
                 .build();
 
-        // Mock the behavior of the repository to return a valid payment for the client
         PaymentModel storedPayment = PaymentModel.builder()
                 .clientId("C001")
                 .paymentItems(Collections.singletonList(PaymentItemModel.builder()
@@ -83,7 +82,7 @@ class ConfirmPaymentUseCaseImplTest {
                 .clientId("C001")
                 .paymentItems(Collections.singletonList(PaymentItemModel.builder()
                         .paymentId("P001")
-                        .paymentValue(new BigDecimal("100.00")) // original value in DB
+                        .paymentValue(new BigDecimal("100.00"))
                         .build()))
                 .build();
         Mockito.when(paymentRepository.findByClientId("C001")).thenReturn(Optional.of(storedPayment));

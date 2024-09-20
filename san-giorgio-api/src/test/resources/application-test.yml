@@ -1,0 +1,5 @@
+aws:
+  sqs:
+    partialPaymentQueueUrl: http://localhost:4566/000000000000/partial-payments
+    fullPaymentQueueUrl: http://localhost:4566/000000000000/full-payments
+    excessPaymentQueueUrl: http://localhost:4566/000000000000/excess-payments

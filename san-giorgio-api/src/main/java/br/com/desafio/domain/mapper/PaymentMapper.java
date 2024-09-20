@@ -23,7 +23,6 @@ public class PaymentMapper {
                 .build();
     }
 
-    // Converte PaymentItem para PaymentItemModel
     private PaymentItemModel toPaymentItemModel(PaymentItem paymentItem) {
         return PaymentItemModel.builder()
                 .paymentId(paymentItem.getPaymentId())
@@ -32,7 +31,6 @@ public class PaymentMapper {
                 .build();
     }
 
-    // Converte PaymentModel para Payment
     public Payment toPayment(PaymentModel paymentModel) {
         List<PaymentItem> paymentItems = paymentModel.getPaymentItems().stream()
                 .map(this::toPaymentItem)
@@ -44,7 +42,6 @@ public class PaymentMapper {
                 .build();
     }
 
-    // Converte PaymentItemModel para PaymentItem
     private PaymentItem toPaymentItem(PaymentItemModel paymentItemModel) {
         return PaymentItem.builder()
                 .paymentId(paymentItemModel.getPaymentId())

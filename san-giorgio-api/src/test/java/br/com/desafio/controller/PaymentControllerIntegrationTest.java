@@ -12,6 +12,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.MongoDBContainer;
+import org.testcontainers.containers.localstack.LocalStackContainer;
+import org.testcontainers.utility.DockerImageName;
+import software.amazon.awssdk.services.sqs.SqsClient;
+import software.amazon.awssdk.services.sqs.model.CreateQueueRequest;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -21,6 +25,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.testcontainers.containers.localstack.LocalStackContainer.Service.SQS;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -34,6 +39,16 @@ class PaymentControllerIntegrationTest {
         System.setProperty("spring.data.mongodb.uri", mongoDBContainer.getReplicaSetUrl());
     }
 
+    static LocalStackContainer localStackContainer = new LocalStackContainer(DockerImageName.parse("localstack/localstack:1.4.0"))
+            .withServices(SQS);
+
+    static {
+        localStackContainer.start();
+        System.setProperty("AWS_ACCESS_KEY_ID", "test");
+        System.setProperty("AWS_SECRET_ACCESS_KEY", "test");
+        System.setProperty("AWS_REGION", "us-east-1");
+    }
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -43,9 +58,17 @@ class PaymentControllerIntegrationTest {
     @Autowired
     private PaymentRepository paymentRepository;
 
+    @Autowired
+    private SQSClient sqsClient;
+
     @BeforeEach
     public void setup() {
         paymentRepository.deleteAll();
+
+        SqsClient localSqsClient = sqsClient.getSqsClient();
+        String partialQueueUrl = localSqsClient.createQueue(CreateQueueRequest.builder().queueName("partial-payments").build()).queueUrl();
+        String fullQueueUrl = localSqsClient.createQueue(CreateQueueRequest.builder().queueName("full-payments").build()).queueUrl();
+        String excessQueueUrl = localSqsClient.createQueue(CreateQueueRequest.builder().queueName("excess-payments").build()).queueUrl();
 
         PaymentModel payment = PaymentModel.builder()
                 .clientId("C001")
@@ -55,6 +78,10 @@ class PaymentControllerIntegrationTest {
                         .build()))
                 .build();
         paymentRepository.save(payment);
+
+        sqsClient.setPartialPaymentQueueUrl(partialQueueUrl);
+        sqsClient.setFullPaymentQueueUrl(fullQueueUrl);
+        sqsClient.setExcessPaymentQueueUrl(excessQueueUrl);
     }
 
     @Test

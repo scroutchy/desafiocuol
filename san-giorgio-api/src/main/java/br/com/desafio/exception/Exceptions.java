@@ -2,6 +2,9 @@ package br.com.desafio.exception;
 
 public class Exceptions {
 
+    private Exceptions() {
+    }
+
     public static class ClientNotFoundException extends RuntimeException {
         public ClientNotFoundException(String message) {
             super(message);
