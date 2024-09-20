@@ -42,8 +42,5 @@ public class SQSClient {
                 .messageBody(messageBody)
                 .build();
         sqsClient.sendMessage(request);
-
-//        temporary
-//        System.out.println("Mock SQS: Sending message to " + queueUrl);
     }
 }
