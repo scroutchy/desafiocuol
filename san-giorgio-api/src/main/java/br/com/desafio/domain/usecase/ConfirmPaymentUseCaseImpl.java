@@ -10,20 +10,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ConfirmPaymentUseCaseImpl implements ConfirmPaymentUseCase {
 
-    private static final List<String> VALID_CLIENT_IDS = Arrays.asList("C001", "C002", "C003");
-    private static final List<PaymentItemModel> MOCKED_PAYMENT_ITEMS_DB = Arrays.asList(
-            PaymentItemModel.builder().paymentId("P001").paymentValue(new BigDecimal("100.00")).build(),
-            PaymentItemModel.builder().paymentId("P002").paymentValue(new BigDecimal("200.00")).build(),
-            PaymentItemModel.builder().paymentId("P003").paymentValue(new BigDecimal("150.00")).build()
-    );
     private final PaymentRepository paymentRepository;
     private final SQSClient sqsClient;
 
@@ -42,18 +34,22 @@ public class ConfirmPaymentUseCaseImpl implements ConfirmPaymentUseCase {
             BigDecimal receivedValue = item.getPaymentValue();
             BigDecimal originalValue = matchedPaymentItem.get().getPaymentValue();
 
-            if (receivedValue.compareTo(originalValue) < 0) {
-                item.setPaymentStatus("PARTIAL");
-            } else if (receivedValue.compareTo(originalValue) == 0) {
-                item.setPaymentStatus("TOTAL");
-            } else {
-                item.setPaymentStatus("EXCESS");
-            }
+            setPaymentStatusForCurrentItem(item, receivedValue, originalValue);
 
             sqsClient.sendToQueueByPaymentStatus(paymentModel, item.getPaymentStatus());
         }
 
         return paymentModel;
+    }
+
+    private void setPaymentStatusForCurrentItem(PaymentItemModel item, BigDecimal receivedValue, BigDecimal originalValue) {
+        if (receivedValue.compareTo(originalValue) < 0) {
+            item.setPaymentStatus("PARTIAL");
+        } else if (receivedValue.compareTo(originalValue) == 0) {
+            item.setPaymentStatus("TOTAL");
+        } else {
+            item.setPaymentStatus("EXCESS");
+        }
     }
 
     private Optional<PaymentItemModel> findPaymentItemById(PaymentModel paymentModel, String paymentId) {
