@@ -4,7 +4,6 @@ import br.com.desafio.domain.model.PaymentModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.sqs.SqsClient;
-import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
 
 @Component
 @RequiredArgsConstructor
@@ -26,12 +25,12 @@ public class SQSClient {
     }
 
     private void sendMessage(String queueUrl, String messageBody) {
-        SendMessageRequest request = SendMessageRequest.builder()
-                .queueUrl(queueUrl)
-                .messageBody(messageBody)
-                .build();
-        sqsClient.sendMessage(request);
+//        SendMessageRequest request = SendMessageRequest.builder()
+//                .queueUrl(queueUrl)
+//                .messageBody(messageBody)
+//                .build();
+//        sqsClient.sendMessage(request);
 //        temporary
-//        System.out.println("Mock SQS: Sending message to " + queueUrl);
+        System.out.println("Mock SQS: Sending message to " + queueUrl);
     }
 }
