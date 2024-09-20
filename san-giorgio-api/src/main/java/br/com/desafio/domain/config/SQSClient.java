@@ -1,4 +1,4 @@
-package br.com.desafio.controller;
+package br.com.desafio.domain.config;
 
 import br.com.desafio.domain.model.PaymentModel;
 import lombok.Getter;

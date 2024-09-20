@@ -1,5 +1,6 @@
 package br.com.desafio.controller;
 
+import br.com.desafio.domain.config.SQSClient;
 import br.com.desafio.domain.model.PaymentItemModel;
 import br.com.desafio.domain.model.PaymentModel;
 import br.com.desafio.repository.PaymentRepository;

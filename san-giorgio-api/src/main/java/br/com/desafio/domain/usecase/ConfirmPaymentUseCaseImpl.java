@@ -1,6 +1,6 @@
 package br.com.desafio.domain.usecase;
 
-import br.com.desafio.controller.SQSClient;
+import br.com.desafio.domain.config.SQSClient;
 import br.com.desafio.domain.model.PaymentItemModel;
 import br.com.desafio.domain.model.PaymentModel;
 import br.com.desafio.exception.Exceptions.ClientNotFoundException;
