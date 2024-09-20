@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+
+@JsonInclude(NON_NULL)
 @Data
 @Builder
 @AllArgsConstructor
@@ -19,6 +21,4 @@ public class Payment {
     private String clientId;
     @JsonProperty("payment_items")
     private List<PaymentItem> paymentItems;
-    @JsonProperty("error_message")
-    private String errorMessage;
 }
