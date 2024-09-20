@@ -14,13 +14,13 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ConfirmPaymentUseCaseImplTest {
+class ConfirmPaymentUseCaseImplTest {
 
     private final SQSClient sqsClient = Mockito.mock(SQSClient.class);
     private final ConfirmPaymentUseCaseImpl confirmPaymentUseCase = new ConfirmPaymentUseCaseImpl(sqsClient);
 
     @Test
-    public void testConfirmPaymentWithPartialStatus() {
+    void testConfirmPaymentWithPartialStatus() {
         PaymentItemModel paymentItemModel = PaymentItemModel.builder()
                 .paymentId("P001")
                 .paymentValue(new BigDecimal("50.00"))
@@ -36,7 +36,7 @@ public class ConfirmPaymentUseCaseImplTest {
     }
 
     @Test
-    public void testInvalidClientId() {
+    void testInvalidClientId() {
         PaymentItemModel paymentItemModel = PaymentItemModel.builder()
                 .paymentId("P001")
                 .paymentValue(new BigDecimal("50.00"))
@@ -52,7 +52,7 @@ public class ConfirmPaymentUseCaseImplTest {
     }
 
     @Test
-    public void testInvalidPaymentId() {
+    void testInvalidPaymentId() {
         PaymentItemModel paymentItemModel = PaymentItemModel.builder()
                 .paymentId("invalid_payment_id")
                 .paymentValue(new BigDecimal("50.00"))
