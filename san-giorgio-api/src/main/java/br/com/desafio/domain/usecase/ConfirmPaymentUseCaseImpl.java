@@ -3,8 +3,8 @@ package br.com.desafio.domain.usecase;
 import br.com.desafio.controller.SQSClient;
 import br.com.desafio.domain.model.PaymentItemModel;
 import br.com.desafio.domain.model.PaymentModel;
-import br.com.desafio.exception.ClientNotFoundException;
-import br.com.desafio.exception.PaymentItemNotFoundException;
+import br.com.desafio.exception.Exceptions.ClientNotFoundException;
+import br.com.desafio.exception.Exceptions.PaymentItemNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

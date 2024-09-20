@@ -1,6 +1,8 @@
 package br.com.desafio.exception;
 
 import br.com.desafio.controller.ErrorResponse;
+import br.com.desafio.exception.Exceptions.ClientNotFoundException;
+import br.com.desafio.exception.Exceptions.PaymentItemNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

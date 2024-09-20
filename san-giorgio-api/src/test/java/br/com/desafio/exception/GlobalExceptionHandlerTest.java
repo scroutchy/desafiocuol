@@ -1,6 +1,8 @@
 package br.com.desafio.exception;
 
 import br.com.desafio.controller.ErrorResponse;
+import br.com.desafio.exception.Exceptions.ClientNotFoundException;
+import br.com.desafio.exception.Exceptions.PaymentItemNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;

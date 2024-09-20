@@ -3,8 +3,8 @@ package br.com.desafio.domain.usecase;
 import br.com.desafio.controller.SQSClient;
 import br.com.desafio.domain.model.PaymentItemModel;
 import br.com.desafio.domain.model.PaymentModel;
-import br.com.desafio.exception.ClientNotFoundException;
-import br.com.desafio.exception.PaymentItemNotFoundException;
+import br.com.desafio.exception.Exceptions.ClientNotFoundException;
+import br.com.desafio.exception.Exceptions.PaymentItemNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -54,7 +54,7 @@ public class ConfirmPaymentUseCaseImplTest {
     @Test
     public void testInvalidPaymentId() {
         PaymentItemModel paymentItemModel = PaymentItemModel.builder()
-                .paymentId("invalid_payment_id") // paymentId inválido
+                .paymentId("invalid_payment_id")
                 .paymentValue(new BigDecimal("50.00"))
                 .build();
         PaymentModel paymentModel = PaymentModel.builder()
