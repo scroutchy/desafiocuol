@@ -43,4 +43,8 @@ public class SQSClient {
                 .build();
         sqsClient.sendMessage(request);
     }
+
+//    private void sendMessage(String queueUrl, String messageBody) {
+//        System.out.println("Sending message: " + messageBody + " to queueUrl : " + queueUrl);
+//    }
 }
