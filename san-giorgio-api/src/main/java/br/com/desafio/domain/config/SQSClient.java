@@ -44,6 +44,7 @@ public class SQSClient {
         sqsClient.sendMessage(request);
     }
 
+// to uncomment for live test
 //    private void sendMessage(String queueUrl, String messageBody) {
 //        System.out.println("Sending message: " + messageBody + " to queueUrl : " + queueUrl);
 //    }
