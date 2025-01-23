@@ -14,10 +14,6 @@ public class TestClassOrderer implements ClassOrderer {
     }
 
     private int weight(ClassDescriptor classDescriptor) {
-        if (classDescriptor.isAnnotated(SpringBootTest.class)) {
-            return 2;
-        } else {
-            return 1;
-        }
+        return classDescriptor.isAnnotated(SpringBootTest.class) ? 2 : 1;
     }
 }
