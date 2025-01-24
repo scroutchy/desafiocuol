@@ -4,6 +4,7 @@ import br.com.desafio.domain.model.PaymentModel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.sqs.SqsClient;
@@ -33,15 +34,20 @@ public class SQSClient {
             case "EXCESS" -> excessPaymentQueueUrl;
             default -> throw new IllegalArgumentException("Status desconhecido");
         };
-        sendMessage(queueUrl, payment.toString());
+        sendMessage(queueUrl, payment.toString(), ObjectId.get().toHexString());
     }
 
-    private void sendMessage(String queueUrl, String messageBody) {
-        SendMessageRequest request = SendMessageRequest.builder()
+    private void sendMessage(String queueUrl, String messageBody, String messageGroupId) {
+        SendMessageRequest.Builder requestBuilder = SendMessageRequest.builder()
                 .queueUrl(queueUrl)
-                .messageBody(messageBody)
-                .build();
-        sqsClient.sendMessage(request);
+                .messageBody(messageBody);
+
+        // Add MessageGroupId only if the queue is a FIFO queue
+        if (queueUrl.endsWith(".fifo")) {
+            requestBuilder.messageGroupId(messageGroupId);
+        }
+
+        sqsClient.sendMessage(requestBuilder.build());
     }
 
 // to uncomment for live test , new attempt
