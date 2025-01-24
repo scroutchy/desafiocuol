@@ -1,9 +1,9 @@
 package br.com.desafio.domain.mapper;
 
-import br.com.desafio.controller.Payment;
-import br.com.desafio.controller.PaymentItem;
-import br.com.desafio.domain.model.PaymentItemModel;
-import br.com.desafio.domain.model.PaymentModel;
+import br.com.desafio.controller.PaymentApiDto;
+import br.com.desafio.controller.PaymentItemApiDto;
+import br.com.desafio.domain.model.PaymentItem;
+import br.com.desafio.domain.model.Payment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,18 +23,18 @@ class PaymentMapperTest {
     }
 
     @Test
-    void testToPaymentModel() {
-        PaymentItem paymentItem1 = PaymentItem.builder()
+    void testToPayment() {
+        PaymentItemApiDto paymentItemApiDto1 = PaymentItemApiDto.builder()
                 .paymentId("123")
                 .paymentValue(BigDecimal.valueOf(100.00))
                 .paymentStatus("PAID")
                 .build();
-        Payment payment = Payment.builder()
+        PaymentApiDto payment = PaymentApiDto.builder()
                 .clientId("client123")
-                .paymentItems(singletonList(paymentItem1))
+                .paymentItems(singletonList(paymentItemApiDto1))
                 .build();
 
-        PaymentModel paymentModel = paymentMapper.toPaymentModel(payment);
+        Payment paymentModel = paymentMapper.toPayment(payment);
 
         assertNotNull(paymentModel);
         assertEquals("client123", paymentModel.getClientId());
@@ -45,19 +45,19 @@ class PaymentMapperTest {
     }
 
     @Test
-    void testToPayment() {
+    void testToPaymentApiDto() {
 
-        PaymentItemModel paymentItemModel1 = PaymentItemModel.builder()
+        PaymentItem paymentItem1 = PaymentItem.builder()
                 .paymentId("123")
                 .paymentValue(BigDecimal.valueOf(100.00))
                 .paymentStatus("PAID")
                 .build();
-        PaymentModel paymentModel = PaymentModel.builder()
+        Payment paymentModel = Payment.builder()
                 .clientId("client123")
-                .paymentItems(singletonList(paymentItemModel1))
+                .paymentItems(singletonList(paymentItem1))
                 .build();
 
-        Payment payment = paymentMapper.toPayment(paymentModel);
+        PaymentApiDto payment = paymentMapper.toPaymentApiDto(paymentModel);
 
         assertNotNull(payment);
         assertEquals("client123", payment.getClientId());

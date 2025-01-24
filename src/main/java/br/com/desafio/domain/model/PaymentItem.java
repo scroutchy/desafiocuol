@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PaymentItemModel {
+public class PaymentItem {
     private String paymentId;
     private BigDecimal paymentValue;
     private String paymentStatus;

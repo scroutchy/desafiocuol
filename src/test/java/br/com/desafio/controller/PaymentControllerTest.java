@@ -1,7 +1,7 @@
 package br.com.desafio.controller;
 
 import br.com.desafio.domain.mapper.PaymentMapper;
-import br.com.desafio.domain.model.PaymentModel;
+import br.com.desafio.domain.model.Payment;
 import br.com.desafio.domain.usecase.ConfirmPaymentUseCase;
 import br.com.desafio.exception.Exceptions.ClientNotFoundException;
 import br.com.desafio.exception.Exceptions.PaymentItemNotFoundException;
@@ -35,24 +35,24 @@ class PaymentControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private Payment paymentRequest;
-    private PaymentModel paymentModel;
-    private PaymentModel updatedPaymentModel;
-    private Payment responsePayment;
+    private PaymentApiDto paymentRequest;
+    private Payment payment;
+    private Payment updatedPayment;
+    private PaymentApiDto responsePayment;
 
     @BeforeEach
     public void setUp() {
-        paymentRequest = new Payment();
-        paymentModel = new PaymentModel();
-        updatedPaymentModel = new PaymentModel();
-        responsePayment = new Payment();
+        paymentRequest = new PaymentApiDto();
+        payment = new Payment();
+        updatedPayment = new Payment();
+        responsePayment = new PaymentApiDto();
     }
 
     @Test
     void testSetPayments_Success() throws Exception {
-        when(paymentMapper.toPaymentModel(paymentRequest)).thenReturn(paymentModel);
-        when(confirmPaymentUseCase.confirm(paymentModel)).thenReturn(updatedPaymentModel);
-        when(paymentMapper.toPayment(updatedPaymentModel)).thenReturn(responsePayment);
+        when(paymentMapper.toPayment(paymentRequest)).thenReturn(payment);
+        when(confirmPaymentUseCase.confirm(payment)).thenReturn(updatedPayment);
+        when(paymentMapper.toPaymentApiDto(updatedPayment)).thenReturn(responsePayment);
 
         mockMvc.perform(post("/api/payments")
                         .contentType(APPLICATION_JSON)
@@ -60,15 +60,15 @@ class PaymentControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON));
 
-        verify(paymentMapper).toPaymentModel(paymentRequest);
-        verify(confirmPaymentUseCase).confirm(paymentModel);
-        verify(paymentMapper).toPayment(updatedPaymentModel);
+        verify(paymentMapper).toPayment(paymentRequest);
+        verify(confirmPaymentUseCase).confirm(payment);
+        verify(paymentMapper).toPaymentApiDto(updatedPayment);
     }
 
     @Test
     void testSetPayments_ClientNotFound() throws Exception {
-        when(paymentMapper.toPaymentModel(paymentRequest)).thenReturn(paymentModel);
-        when(confirmPaymentUseCase.confirm(paymentModel)).thenThrow(new ClientNotFoundException("Client not found"));
+        when(paymentMapper.toPayment(paymentRequest)).thenReturn(payment);
+        when(confirmPaymentUseCase.confirm(payment)).thenThrow(new ClientNotFoundException("Client not found"));
 
         mockMvc.perform(post("/api/payments")
                         .contentType(APPLICATION_JSON)
@@ -76,14 +76,14 @@ class PaymentControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(APPLICATION_JSON));
 
-        verify(paymentMapper).toPaymentModel(paymentRequest);
-        verify(confirmPaymentUseCase).confirm(paymentModel);
+        verify(paymentMapper).toPayment(paymentRequest);
+        verify(confirmPaymentUseCase).confirm(payment);
     }
 
     @Test
     void testSetPayments_PaymentItemNotFound() throws Exception {
-        when(paymentMapper.toPaymentModel(paymentRequest)).thenReturn(paymentModel);
-        when(confirmPaymentUseCase.confirm(paymentModel)).thenThrow(new PaymentItemNotFoundException("Payment item not found"));
+        when(paymentMapper.toPayment(paymentRequest)).thenReturn(payment);
+        when(confirmPaymentUseCase.confirm(payment)).thenThrow(new PaymentItemNotFoundException("Payment item not found"));
 
         mockMvc.perform(post("/api/payments")
                         .contentType(APPLICATION_JSON)
@@ -91,14 +91,14 @@ class PaymentControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(APPLICATION_JSON));
 
-        verify(paymentMapper).toPaymentModel(paymentRequest);
-        verify(confirmPaymentUseCase).confirm(paymentModel);
+        verify(paymentMapper).toPayment(paymentRequest);
+        verify(confirmPaymentUseCase).confirm(payment);
     }
 
     @Test
     void testSetPayments_InvalidArgument() throws Exception {
-        when(paymentMapper.toPaymentModel(paymentRequest)).thenReturn(paymentModel);
-        when(confirmPaymentUseCase.confirm(paymentModel)).thenThrow(new IllegalArgumentException("Invalid payment"));
+        when(paymentMapper.toPayment(paymentRequest)).thenReturn(payment);
+        when(confirmPaymentUseCase.confirm(payment)).thenThrow(new IllegalArgumentException("Invalid payment"));
 
         mockMvc.perform(post("/api/payments")
                         .contentType(APPLICATION_JSON)
@@ -106,7 +106,7 @@ class PaymentControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(APPLICATION_JSON));
 
-        verify(paymentMapper).toPaymentModel(paymentRequest);
-        verify(confirmPaymentUseCase).confirm(paymentModel);
+        verify(paymentMapper).toPayment(paymentRequest);
+        verify(confirmPaymentUseCase).confirm(payment);
     }
 }

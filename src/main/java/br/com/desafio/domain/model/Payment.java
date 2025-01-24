@@ -14,9 +14,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Document(collection = "payments")
-public class PaymentModel {
+public class Payment {
     @Id
     private String id;
     private String clientId;
-    private List<PaymentItemModel> paymentItems;
+    private List<PaymentItem> paymentItems;
 }

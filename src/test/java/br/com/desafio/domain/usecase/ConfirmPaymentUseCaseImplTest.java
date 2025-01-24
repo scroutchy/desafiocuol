@@ -1,8 +1,8 @@
 package br.com.desafio.domain.usecase;
 
 import br.com.desafio.domain.config.SQSClient;
-import br.com.desafio.domain.model.PaymentItemModel;
-import br.com.desafio.domain.model.PaymentModel;
+import br.com.desafio.domain.model.PaymentItem;
+import br.com.desafio.domain.model.Payment;
 import br.com.desafio.exception.Exceptions.ClientNotFoundException;
 import br.com.desafio.exception.Exceptions.PaymentItemNotFoundException;
 import br.com.desafio.repository.PaymentRepository;
@@ -25,69 +25,69 @@ class ConfirmPaymentUseCaseImplTest {
 
     @Test
     void testConfirmPaymentWithPartialStatus() {
-        PaymentItemModel paymentItemModel = PaymentItemModel.builder()
+        PaymentItem paymentItem = PaymentItem.builder()
                 .paymentId("P001")
                 .paymentValue(new BigDecimal("50.00"))
                 .build();
-        PaymentModel paymentModel = PaymentModel.builder()
+        Payment payment = Payment.builder()
                 .clientId("C001")
-                .paymentItems(Collections.singletonList(paymentItemModel))
+                .paymentItems(Collections.singletonList(paymentItem))
                 .build();
 
-        PaymentModel storedPayment = PaymentModel.builder()
+        Payment storedPayment = Payment.builder()
                 .clientId("C001")
-                .paymentItems(Collections.singletonList(PaymentItemModel.builder()
+                .paymentItems(Collections.singletonList(PaymentItem.builder()
                         .paymentId("P001")
                         .paymentValue(new BigDecimal("100.00"))
                         .build()))
                 .build();
         Mockito.when(paymentRepository.findByClientId("C001")).thenReturn(Optional.of(storedPayment));
 
-        PaymentModel result = confirmPaymentUseCase.confirm(paymentModel);
+        Payment result = confirmPaymentUseCase.confirm(payment);
 
         assertEquals("PARTIAL", result.getPaymentItems().get(0).getPaymentStatus());
     }
 
     @Test
     void testInvalidClientId() {
-        PaymentItemModel paymentItemModel = PaymentItemModel.builder()
+        PaymentItem paymentItem = PaymentItem.builder()
                 .paymentId("P001")
                 .paymentValue(new BigDecimal("50.00"))
                 .build();
-        PaymentModel paymentModel = PaymentModel.builder()
+        Payment payment = Payment.builder()
                 .clientId("C999")
-                .paymentItems(Collections.singletonList(paymentItemModel))
+                .paymentItems(Collections.singletonList(paymentItem))
                 .build();
 
         Mockito.when(paymentRepository.findByClientId("C999")).thenReturn(Optional.empty());
 
-        var exception = assertThrows(ClientNotFoundException.class, () -> confirmPaymentUseCase.confirm(paymentModel));
+        var exception = assertThrows(ClientNotFoundException.class, () -> confirmPaymentUseCase.confirm(payment));
 
         assertEquals("Client ID C999 not found.", exception.getMessage());
     }
 
     @Test
     void testInvalidPaymentId() {
-        PaymentItemModel paymentItemModel = PaymentItemModel.builder()
+        PaymentItem paymentItem = PaymentItem.builder()
                 .paymentId("invalid_payment_id")
                 .paymentValue(new BigDecimal("50.00"))
                 .build();
-        PaymentModel paymentModel = PaymentModel.builder()
+        Payment payment = Payment.builder()
                 .clientId("C001")
-                .paymentItems(Collections.singletonList(paymentItemModel))
+                .paymentItems(Collections.singletonList(paymentItem))
                 .build();
 
 
-        PaymentModel storedPayment = PaymentModel.builder()
+        Payment storedPayment = Payment.builder()
                 .clientId("C001")
-                .paymentItems(Collections.singletonList(PaymentItemModel.builder()
+                .paymentItems(Collections.singletonList(PaymentItem.builder()
                         .paymentId("P001")
                         .paymentValue(new BigDecimal("100.00"))
                         .build()))
                 .build();
         Mockito.when(paymentRepository.findByClientId("C001")).thenReturn(Optional.of(storedPayment));
 
-        var exception = assertThrows(PaymentItemNotFoundException.class, () -> confirmPaymentUseCase.confirm(paymentModel));
+        var exception = assertThrows(PaymentItemNotFoundException.class, () -> confirmPaymentUseCase.confirm(payment));
 
         assertEquals("Payment ID invalid_payment_id not found.", exception.getMessage());
     }

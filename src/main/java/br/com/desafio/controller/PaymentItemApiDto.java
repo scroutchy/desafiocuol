@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PaymentItem {
+public class PaymentItemApiDto {
     @JsonProperty("payment_id")
     private String paymentId;
     @JsonProperty("payment_value")
