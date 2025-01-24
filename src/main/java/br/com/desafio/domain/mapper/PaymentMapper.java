@@ -2,8 +2,8 @@ package br.com.desafio.domain.mapper;
 
 import br.com.desafio.controller.PaymentApiDto;
 import br.com.desafio.controller.PaymentItemApiDto;
-import br.com.desafio.domain.model.PaymentItem;
 import br.com.desafio.domain.model.Payment;
+import br.com.desafio.domain.model.PaymentItem;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -27,7 +27,6 @@ public class PaymentMapper {
         return PaymentItem.builder()
                 .paymentId(paymentItemApiDto.getPaymentId())
                 .paymentValue(paymentItemApiDto.getPaymentValue())
-                .paymentStatus(paymentItemApiDto.getPaymentStatus())
                 .build();
     }
 
