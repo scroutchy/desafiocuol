@@ -1,7 +1,7 @@
 package br.com.desafio.controller;
 
 import br.com.desafio.domain.mapper.PaymentMapper;
-import br.com.desafio.domain.model.PaymentModel;
+import br.com.desafio.domain.model.Payment;
 import br.com.desafio.domain.usecase.ConfirmPaymentUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +20,11 @@ public class PaymentController {
     private final ConfirmPaymentUseCase confirmPaymentUseCase;
 
     @PostMapping(path = "/api/payments")
-    public ResponseEntity<Payment> setPayments(@Valid @RequestBody Payment request) {
-        PaymentModel paymentModel = paymentMapper.toPaymentModel(request);
-        PaymentModel updatedPaymentModel = confirmPaymentUseCase.confirm(paymentModel);
+    public ResponseEntity<PaymentApiDto> setPayments(@Valid @RequestBody PaymentApiDto request) {
+        Payment payment = paymentMapper.toPayment(request);
+        Payment updatedPayment = confirmPaymentUseCase.confirm(payment);
 
-        Payment responsePayment = paymentMapper.toPayment(updatedPaymentModel);
+        PaymentApiDto responsePayment = paymentMapper.toPaymentApiDto(updatedPayment);
         return ResponseEntity.status(OK).body(responsePayment);
 
     }

@@ -1,8 +1,8 @@
 package br.com.desafio.domain.usecase;
 
 
-import br.com.desafio.domain.model.PaymentModel;
+import br.com.desafio.domain.model.Payment;
 
 public interface ConfirmPaymentUseCase {
-    PaymentModel confirm(PaymentModel paymentModel);
+    Payment confirm(Payment payment);
 }

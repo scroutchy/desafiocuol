@@ -1,8 +1,8 @@
 package br.com.desafio.controller;
 
 import br.com.desafio.domain.config.SQSClient;
-import br.com.desafio.domain.model.PaymentItemModel;
-import br.com.desafio.domain.model.PaymentModel;
+import br.com.desafio.domain.model.PaymentItem;
+import br.com.desafio.domain.model.Payment;
 import br.com.desafio.repository.PaymentRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -71,9 +71,9 @@ class PaymentControllerIntegrationTest {
         String fullQueueUrl = localSqsClient.createQueue(CreateQueueRequest.builder().queueName("full-payments").build()).queueUrl();
         String excessQueueUrl = localSqsClient.createQueue(CreateQueueRequest.builder().queueName("excess-payments").build()).queueUrl();
 
-        PaymentModel payment = PaymentModel.builder()
+        Payment payment = Payment.builder()
                 .clientId("C001")
-                .paymentItems(singletonList(PaymentItemModel.builder()
+                .paymentItems(singletonList(PaymentItem.builder()
                         .paymentId("P001")
                         .paymentValue(new BigDecimal("100.00"))
                         .build()))
@@ -88,9 +88,9 @@ class PaymentControllerIntegrationTest {
     @Test
     void testSetPayments_SuccessForTotal() throws Exception {
 
-        Payment paymentRequest = Payment.builder()
+        PaymentApiDto paymentRequest = PaymentApiDto.builder()
                 .clientId("C001")
-                .paymentItems(Collections.singletonList(PaymentItem.builder()
+                .paymentItems(Collections.singletonList(PaymentItemApiDto.builder()
                         .paymentId("P001")
                         .paymentValue(new BigDecimal("100.00"))
                         .build()))
@@ -109,9 +109,9 @@ class PaymentControllerIntegrationTest {
     @Test
     void testSetPayments_SuccessForExcess() throws Exception {
 
-        Payment paymentRequest = Payment.builder()
+        PaymentApiDto paymentRequest = PaymentApiDto.builder()
                 .clientId("C001")
-                .paymentItems(Collections.singletonList(PaymentItem.builder()
+                .paymentItems(Collections.singletonList(PaymentItemApiDto.builder()
                         .paymentId("P001")
                         .paymentValue(new BigDecimal("150.00"))
                         .build()))
@@ -130,9 +130,9 @@ class PaymentControllerIntegrationTest {
     @Test
     void testSetPayments_SuccessForPartial() throws Exception {
 
-        Payment paymentRequest = Payment.builder()
+        PaymentApiDto paymentRequest = PaymentApiDto.builder()
                 .clientId("C001")
-                .paymentItems(Collections.singletonList(PaymentItem.builder()
+                .paymentItems(Collections.singletonList(PaymentItemApiDto.builder()
                         .paymentId("P001")
                         .paymentValue(new BigDecimal("50.00"))
                         .build()))
@@ -151,9 +151,9 @@ class PaymentControllerIntegrationTest {
     @Test
     void testSetPayments_FailureForClientNotFound() throws Exception {
 
-        Payment paymentRequest = Payment.builder()
+        PaymentApiDto paymentRequest = PaymentApiDto.builder()
                 .clientId("dummy")
-                .paymentItems(Collections.singletonList(PaymentItem.builder()
+                .paymentItems(Collections.singletonList(PaymentItemApiDto.builder()
                         .paymentId("P001")
                         .paymentValue(new BigDecimal("50.00"))
                         .build()))
@@ -169,9 +169,9 @@ class PaymentControllerIntegrationTest {
     @Test
     void testSetPayments_FailureForPaymentItemNotFound() throws Exception {
 
-        Payment paymentRequest = Payment.builder()
+        PaymentApiDto paymentRequest = PaymentApiDto.builder()
                 .clientId("C001")
-                .paymentItems(Collections.singletonList(PaymentItem.builder()
+                .paymentItems(Collections.singletonList(PaymentItemApiDto.builder()
                         .paymentId("dummy")
                         .paymentValue(new BigDecimal("50.00"))
                         .build()))

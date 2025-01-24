@@ -1,6 +1,6 @@
 package br.com.desafio.domain.config;
 
-import br.com.desafio.domain.model.PaymentModel;
+import br.com.desafio.domain.model.PaymentItem;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -27,7 +27,7 @@ public class SQSClient {
     @Getter
     private final SqsClient sqsClient;
 
-    public void sendToQueueByPaymentStatus(PaymentModel payment, String paymentStatus) {
+    public void sendToQueueByPaymentStatus(PaymentItem payment, String paymentStatus) {
         String queueUrl = switch (paymentStatus) {
             case "PARTIAL" -> partialPaymentQueueUrl;
             case "TOTAL" -> fullPaymentQueueUrl;
@@ -49,9 +49,4 @@ public class SQSClient {
 
         sqsClient.sendMessage(requestBuilder.build());
     }
-
-// to uncomment for live test , new attempt
-//    private void sendMessage(String queueUrl, String messageBody) {
-//        System.out.println("Sending message: " + messageBody + " to queueUrl : " + queueUrl);
-//    }
 }

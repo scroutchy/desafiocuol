@@ -16,9 +16,9 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Payment {
+public class PaymentApiDto {
     @JsonProperty("client_id")
     private String clientId;
     @JsonProperty("payment_items")
-    private List<PaymentItem> paymentItems;
+    private List<PaymentItemApiDto> paymentItems;
 }
