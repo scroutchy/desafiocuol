@@ -4,6 +4,6 @@ spring:
       uri: mongodb://mongodb:27017/paymentdb
 aws:
   sqs:
-    partialPaymentQueueUrl: # real url
-    fullPaymentQueueUrl: # real url
-    excessPaymentQueueUrl: # real url
+    partialPaymentQueueUrl: https://sqs.sa-east-1.amazonaws.com/442426883417/ScrSanGiorgioQueue.fifo
+    fullPaymentQueueUrl: https://sqs.sa-east-1.amazonaws.com/442426883417/ScrSanGiorgioQueue.fifo
+    excessPaymentQueueUrl: https://sqs.sa-east-1.amazonaws.com/442426883417/ScrSanGiorgioQueue.fifo
