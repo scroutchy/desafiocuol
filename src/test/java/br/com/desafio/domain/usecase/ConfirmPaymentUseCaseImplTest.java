@@ -1,8 +1,8 @@
 package br.com.desafio.domain.usecase;
 
-import br.com.desafio.domain.config.SQSClient;
-import br.com.desafio.domain.model.PaymentItem;
+import br.com.desafio.domain.config.PaymentSqsClient;
 import br.com.desafio.domain.model.Payment;
+import br.com.desafio.domain.model.PaymentItem;
 import br.com.desafio.exception.Exceptions.ClientNotFoundException;
 import br.com.desafio.exception.Exceptions.PaymentItemNotFoundException;
 import br.com.desafio.repository.PaymentRepository;
@@ -19,9 +19,9 @@ import static org.mockito.Mockito.mock;
 
 class ConfirmPaymentUseCaseImplTest {
 
-    private final SQSClient sqsClient = mock(SQSClient.class);
+    private final PaymentSqsClient paymentSqsClient = mock(PaymentSqsClient.class);
     private final PaymentRepository paymentRepository = mock(PaymentRepository.class);
-    private final ConfirmPaymentUseCaseImpl confirmPaymentUseCase = new ConfirmPaymentUseCaseImpl(paymentRepository, sqsClient);
+    private final ConfirmPaymentUseCaseImpl confirmPaymentUseCase = new ConfirmPaymentUseCaseImpl(paymentRepository, paymentSqsClient);
 
     @Test
     void testConfirmPaymentWithPartialStatus() {

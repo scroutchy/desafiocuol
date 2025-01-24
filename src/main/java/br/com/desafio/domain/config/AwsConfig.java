@@ -11,12 +11,6 @@ import static software.amazon.awssdk.regions.Region.SA_EAST_1;
 @Configuration
 public class AwsConfig {
 
-    private final AwsCredentialsConfig awsCredentialsConfig;
-
-    public AwsConfig(AwsCredentialsConfig awsCredentialsConfig) {
-        this.awsCredentialsConfig = awsCredentialsConfig;
-    }
-
     @Bean
     @Profile("!test")
     public SqsClient sqsClient() {

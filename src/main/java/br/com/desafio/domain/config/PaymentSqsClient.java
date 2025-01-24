@@ -13,7 +13,7 @@ import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
 @Component
 @RequiredArgsConstructor
 @Setter
-public class SQSClient {
+public class PaymentSqsClient {
 
     @Value("${aws.sqs.partialPaymentQueueUrl}")
     private String partialPaymentQueueUrl;

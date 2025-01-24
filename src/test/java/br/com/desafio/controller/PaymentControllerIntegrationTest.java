@@ -1,8 +1,8 @@
 package br.com.desafio.controller;
 
-import br.com.desafio.domain.config.SQSClient;
-import br.com.desafio.domain.model.PaymentItem;
+import br.com.desafio.domain.config.PaymentSqsClient;
 import br.com.desafio.domain.model.Payment;
+import br.com.desafio.domain.model.PaymentItem;
 import br.com.desafio.repository.PaymentRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,13 +60,13 @@ class PaymentControllerIntegrationTest {
     private PaymentRepository paymentRepository;
 
     @Autowired
-    private SQSClient sqsClient;
+    private PaymentSqsClient paymentSqsClient;
 
     @BeforeEach
     public void setup() {
         paymentRepository.deleteAll();
 
-        SqsClient localSqsClient = sqsClient.getSqsClient();
+        SqsClient localSqsClient = paymentSqsClient.getSqsClient();
         String partialQueueUrl = localSqsClient.createQueue(CreateQueueRequest.builder().queueName("partial-payments").build()).queueUrl();
         String fullQueueUrl = localSqsClient.createQueue(CreateQueueRequest.builder().queueName("full-payments").build()).queueUrl();
         String excessQueueUrl = localSqsClient.createQueue(CreateQueueRequest.builder().queueName("excess-payments").build()).queueUrl();
@@ -80,9 +80,9 @@ class PaymentControllerIntegrationTest {
                 .build();
         paymentRepository.save(payment);
 
-        sqsClient.setPartialPaymentQueueUrl(partialQueueUrl);
-        sqsClient.setFullPaymentQueueUrl(fullQueueUrl);
-        sqsClient.setExcessPaymentQueueUrl(excessQueueUrl);
+        paymentSqsClient.setPartialPaymentQueueUrl(partialQueueUrl);
+        paymentSqsClient.setFullPaymentQueueUrl(fullQueueUrl);
+        paymentSqsClient.setExcessPaymentQueueUrl(excessQueueUrl);
     }
 
     @Test

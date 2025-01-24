@@ -1,8 +1,8 @@
 package br.com.desafio.domain.usecase;
 
-import br.com.desafio.domain.config.SQSClient;
-import br.com.desafio.domain.model.PaymentItem;
+import br.com.desafio.domain.config.PaymentSqsClient;
 import br.com.desafio.domain.model.Payment;
+import br.com.desafio.domain.model.PaymentItem;
 import br.com.desafio.exception.Exceptions.ClientNotFoundException;
 import br.com.desafio.exception.Exceptions.PaymentItemNotFoundException;
 import br.com.desafio.repository.PaymentRepository;
@@ -17,7 +17,7 @@ import java.util.Optional;
 public class ConfirmPaymentUseCaseImpl implements ConfirmPaymentUseCase {
 
     private final PaymentRepository paymentRepository;
-    private final SQSClient sqsClient;
+    private final PaymentSqsClient paymentSqsClient;
 
     @Override
     public Payment confirm(Payment payment) {
@@ -36,7 +36,7 @@ public class ConfirmPaymentUseCaseImpl implements ConfirmPaymentUseCase {
 
             setPaymentStatusForCurrentItem(item, receivedValue, originalValue);
 
-            sqsClient.sendToQueueByPaymentStatus(item, item.getPaymentStatus());
+            paymentSqsClient.sendToQueueByPaymentStatus(item, item.getPaymentStatus());
         }
 
         return payment;

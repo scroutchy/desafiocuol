@@ -7,7 +7,6 @@ import br.com.desafio.domain.model.PaymentItem;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class PaymentMapper {
@@ -15,7 +14,7 @@ public class PaymentMapper {
     public Payment toPayment(PaymentApiDto payment) {
         List<PaymentItem> paymentItems = payment.getPaymentItems().stream()
                 .map(this::toPaymentItem)
-                .collect(Collectors.toList());
+                .toList();
 
         return Payment.builder()
                 .clientId(payment.getClientId())
@@ -33,7 +32,7 @@ public class PaymentMapper {
     public PaymentApiDto toPaymentApiDto(Payment payment) {
         List<PaymentItemApiDto> paymentItemApiDtos = payment.getPaymentItems().stream()
                 .map(this::toPaymentItemApiDto)
-                .collect(Collectors.toList());
+                .toList();
 
         return PaymentApiDto.builder()
                 .clientId(payment.getClientId())
