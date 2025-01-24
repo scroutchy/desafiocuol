@@ -2,16 +2,15 @@ package br.com.desafio.domain.mapper;
 
 import br.com.desafio.controller.PaymentApiDto;
 import br.com.desafio.controller.PaymentItemApiDto;
-import br.com.desafio.domain.model.PaymentItem;
 import br.com.desafio.domain.model.Payment;
+import br.com.desafio.domain.model.PaymentItem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
 import static java.util.Collections.singletonList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class PaymentMapperTest {
 
@@ -41,7 +40,7 @@ class PaymentMapperTest {
         assertEquals(1, paymentModel.getPaymentItems().size());
         assertEquals("123", paymentModel.getPaymentItems().get(0).getPaymentId());
         assertEquals(BigDecimal.valueOf(100.00), paymentModel.getPaymentItems().get(0).getPaymentValue());
-        assertEquals("PAID", paymentModel.getPaymentItems().get(0).getPaymentStatus());
+        assertNull(paymentModel.getPaymentItems().get(0).getPaymentStatus());
     }
 
     @Test

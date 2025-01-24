@@ -27,14 +27,14 @@ public class SQSClient {
     @Getter
     private final SqsClient sqsClient;
 
-    public void sendToQueueByPaymentStatus(PaymentItem payment, String paymentStatus) {
+    public void sendToQueueByPaymentStatus(PaymentItem paymentItem, String paymentStatus) {
         String queueUrl = switch (paymentStatus) {
             case "PARTIAL" -> partialPaymentQueueUrl;
             case "TOTAL" -> fullPaymentQueueUrl;
             case "EXCESS" -> excessPaymentQueueUrl;
             default -> throw new IllegalArgumentException("Status desconhecido");
         };
-        sendMessage(queueUrl, payment.toString(), ObjectId.get().toHexString());
+        sendMessage(queueUrl, paymentItem.toString(), ObjectId.get().toHexString());
     }
 
     private void sendMessage(String queueUrl, String messageBody, String messageGroupId) {
