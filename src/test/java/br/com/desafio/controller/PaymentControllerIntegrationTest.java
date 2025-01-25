@@ -5,6 +5,7 @@ import br.com.desafio.domain.model.api.PaymentApiDto;
 import br.com.desafio.domain.model.api.PaymentItemApiDto;
 import br.com.desafio.domain.model.entity.Payment;
 import br.com.desafio.domain.model.entity.PaymentItem;
+import br.com.desafio.domain.model.sqs.PaymentItemSqsDto;
 import br.com.desafio.repository.PaymentRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,8 +25,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 
 import static java.util.Collections.singletonList;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -114,17 +114,15 @@ class PaymentControllerIntegrationTest {
         var partialQueueUrl = paymentSqsClient.getPartialPaymentQueueUrl();
         var excessQueueUrl = paymentSqsClient.getExcessPaymentQueueUrl();
 
-        assertTrue(sqsClient.receiveMessage(b -> b.queueUrl(totalQueueUrl).maxNumberOfMessages(1)).hasMessages());
         assertFalse(sqsClient.receiveMessage(b -> b.queueUrl(partialQueueUrl).maxNumberOfMessages(1).waitTimeSeconds(1)).hasMessages());
         assertFalse(sqsClient.receiveMessage(b -> b.queueUrl(excessQueueUrl).maxNumberOfMessages(1).waitTimeSeconds(1)).hasMessages());
 
-//        assertFalse(messages.isEmpty());
-//        var message = messages.stream().findFirst().get();
-//        var messageBody = message.body();
-//        System.out.println("Raw SQS Message Body: " + messageBody);
-//        var paymentItemSqsDto = objectMapper.readValue(message.body(), PaymentItemSqsDto.class);
-//        assertEquals("P001", paymentItemSqsDto.getPaymentId());
-//        assertEquals(new BigDecimal("100.00"), paymentItemSqsDto.getPaymentValue());
+        var messages = sqsClient.receiveMessage(b -> b.queueUrl(totalQueueUrl).maxNumberOfMessages(1)).messages();
+        assertFalse(messages.isEmpty());
+        var message = messages.stream().findFirst().get();
+        var paymentItemSqsDto = objectMapper.readValue(message.body(), PaymentItemSqsDto.class);
+        assertEquals("P001", paymentItemSqsDto.getPaymentId());
+        assertEquals(new BigDecimal("100.00"), paymentItemSqsDto.getPaymentValue());
     }
 
     @Test
