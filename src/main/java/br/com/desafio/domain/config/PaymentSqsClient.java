@@ -3,9 +3,11 @@ package br.com.desafio.domain.config;
 import br.com.desafio.domain.mapper.PaymentMapper;
 import br.com.desafio.domain.model.entity.PaymentItem;
 import br.com.desafio.domain.model.sqs.PaymentItemSqsDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -31,6 +33,8 @@ public class PaymentSqsClient {
 
     private final PaymentMapper paymentMapper;
 
+    private final ObjectMapper objectMapper;
+
     public void sendToQueueByPaymentStatus(PaymentItem paymentItem, String paymentStatus) {
         String queueUrl = switch (paymentStatus) {
             case "PARTIAL" -> partialPaymentQueueUrl;
@@ -41,10 +45,13 @@ public class PaymentSqsClient {
         sendMessage(queueUrl, paymentMapper.toPaymentItemSqsDto(paymentItem), ObjectId.get().toHexString());
     }
 
+    @SneakyThrows
     private void sendMessage(String queueUrl, PaymentItemSqsDto messageBody, String messageGroupId) {
+        String jsonMessage = objectMapper.writeValueAsString(messageBody);
+
         SendMessageRequest.Builder requestBuilder = SendMessageRequest.builder()
                 .queueUrl(queueUrl)
-                .messageBody(messageBody.toString());
+                .messageBody(jsonMessage);
 
         // Add MessageGroupId only if the queue is a FIFO queue
         if (queueUrl.endsWith(".fifo")) {
