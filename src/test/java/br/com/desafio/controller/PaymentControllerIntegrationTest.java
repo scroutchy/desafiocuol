@@ -1,6 +1,8 @@
 package br.com.desafio.controller;
 
 import br.com.desafio.domain.config.PaymentSqsClient;
+import br.com.desafio.domain.model.api.PaymentApiDto;
+import br.com.desafio.domain.model.api.PaymentItemApiDto;
 import br.com.desafio.domain.model.entity.Payment;
 import br.com.desafio.domain.model.entity.PaymentItem;
 import br.com.desafio.repository.PaymentRepository;
