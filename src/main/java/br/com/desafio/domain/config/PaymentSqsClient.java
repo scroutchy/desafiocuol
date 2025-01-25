@@ -3,9 +3,9 @@ package br.com.desafio.domain.config;
 import br.com.desafio.domain.mapper.PaymentMapper;
 import br.com.desafio.domain.model.entity.PaymentItem;
 import br.com.desafio.domain.model.sqs.PaymentItemSqsDto;
+import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,7 @@ import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
 
 @Component
 @RequiredArgsConstructor
-@Setter
+@Data
 public class PaymentSqsClient {
 
     @Value("${aws.sqs.partialPaymentQueueUrl}")
