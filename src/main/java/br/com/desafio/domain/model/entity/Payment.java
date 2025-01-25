@@ -1,4 +1,4 @@
-package br.com.desafio.domain.model;
+package br.com.desafio.domain.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

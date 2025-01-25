@@ -1,7 +1,7 @@
 package br.com.desafio.controller;
 
 import br.com.desafio.domain.mapper.PaymentMapper;
-import br.com.desafio.domain.model.Payment;
+import br.com.desafio.domain.model.entity.Payment;
 import br.com.desafio.domain.usecase.ConfirmPaymentUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
