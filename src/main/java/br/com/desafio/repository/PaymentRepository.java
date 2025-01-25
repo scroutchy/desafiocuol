@@ -1,6 +1,6 @@
 package br.com.desafio.repository;
 
-import br.com.desafio.domain.model.Payment;
+import br.com.desafio.domain.model.entity.Payment;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

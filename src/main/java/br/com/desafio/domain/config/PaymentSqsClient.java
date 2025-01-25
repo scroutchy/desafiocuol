@@ -1,6 +1,6 @@
 package br.com.desafio.domain.config;
 
-import br.com.desafio.domain.model.PaymentItem;
+import br.com.desafio.domain.model.entity.PaymentItem;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

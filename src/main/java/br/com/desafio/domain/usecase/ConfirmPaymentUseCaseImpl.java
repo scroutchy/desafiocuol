@@ -1,8 +1,8 @@
 package br.com.desafio.domain.usecase;
 
 import br.com.desafio.domain.config.PaymentSqsClient;
-import br.com.desafio.domain.model.Payment;
-import br.com.desafio.domain.model.PaymentItem;
+import br.com.desafio.domain.model.entity.Payment;
+import br.com.desafio.domain.model.entity.PaymentItem;
 import br.com.desafio.exception.Exceptions.ClientNotFoundException;
 import br.com.desafio.exception.Exceptions.PaymentItemNotFoundException;
 import br.com.desafio.repository.PaymentRepository;
