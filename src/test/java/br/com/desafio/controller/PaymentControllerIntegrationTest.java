@@ -24,6 +24,8 @@ import java.math.BigDecimal;
 import java.util.Collections;
 
 import static java.util.Collections.singletonList;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -106,6 +108,23 @@ class PaymentControllerIntegrationTest {
                 .andExpect(jsonPath("$.payment_items[0].payment_id").value("P001"))
                 .andExpect(jsonPath("$.payment_items[0].payment_value").value(100.00))
                 .andExpect(jsonPath("$.payment_items[0].payment_status").value("TOTAL"));
+
+        var sqsClient = paymentSqsClient.getSqsClient();
+        var totalQueueUrl = paymentSqsClient.getFullPaymentQueueUrl();
+        var partialQueueUrl = paymentSqsClient.getPartialPaymentQueueUrl();
+        var excessQueueUrl = paymentSqsClient.getExcessPaymentQueueUrl();
+
+        assertTrue(sqsClient.receiveMessage(b -> b.queueUrl(totalQueueUrl).maxNumberOfMessages(1)).hasMessages());
+        assertFalse(sqsClient.receiveMessage(b -> b.queueUrl(partialQueueUrl).maxNumberOfMessages(1).waitTimeSeconds(1)).hasMessages());
+        assertFalse(sqsClient.receiveMessage(b -> b.queueUrl(excessQueueUrl).maxNumberOfMessages(1).waitTimeSeconds(1)).hasMessages());
+
+//        assertFalse(messages.isEmpty());
+//        var message = messages.stream().findFirst().get();
+//        var messageBody = message.body();
+//        System.out.println("Raw SQS Message Body: " + messageBody);
+//        var paymentItemSqsDto = objectMapper.readValue(message.body(), PaymentItemSqsDto.class);
+//        assertEquals("P001", paymentItemSqsDto.getPaymentId());
+//        assertEquals(new BigDecimal("100.00"), paymentItemSqsDto.getPaymentValue());
     }
 
     @Test
@@ -127,6 +146,15 @@ class PaymentControllerIntegrationTest {
                 .andExpect(jsonPath("$.payment_items[0].payment_id").value("P001"))
                 .andExpect(jsonPath("$.payment_items[0].payment_value").value(150.00))
                 .andExpect(jsonPath("$.payment_items[0].payment_status").value("EXCESS"));
+
+        var sqsClient = paymentSqsClient.getSqsClient();
+        var totalQueueUrl = paymentSqsClient.getFullPaymentQueueUrl();
+        var partialQueueUrl = paymentSqsClient.getPartialPaymentQueueUrl();
+        var excessQueueUrl = paymentSqsClient.getExcessPaymentQueueUrl();
+
+        assertFalse(sqsClient.receiveMessage(b -> b.queueUrl(totalQueueUrl).maxNumberOfMessages(1)).hasMessages());
+        assertFalse(sqsClient.receiveMessage(b -> b.queueUrl(partialQueueUrl).maxNumberOfMessages(1)).hasMessages());
+        assertTrue(sqsClient.receiveMessage(b -> b.queueUrl(excessQueueUrl).maxNumberOfMessages(1)).hasMessages());
     }
 
     @Test
@@ -148,6 +176,16 @@ class PaymentControllerIntegrationTest {
                 .andExpect(jsonPath("$.payment_items[0].payment_id").value("P001"))
                 .andExpect(jsonPath("$.payment_items[0].payment_value").value(50.00))
                 .andExpect(jsonPath("$.payment_items[0].payment_status").value("PARTIAL"));
+
+
+        var sqsClient = paymentSqsClient.getSqsClient();
+        var totalQueueUrl = paymentSqsClient.getFullPaymentQueueUrl();
+        var partialQueueUrl = paymentSqsClient.getPartialPaymentQueueUrl();
+        var excessQueueUrl = paymentSqsClient.getExcessPaymentQueueUrl();
+
+        assertFalse(sqsClient.receiveMessage(b -> b.queueUrl(totalQueueUrl).maxNumberOfMessages(1)).hasMessages());
+        assertTrue(sqsClient.receiveMessage(b -> b.queueUrl(partialQueueUrl).maxNumberOfMessages(1)).hasMessages());
+        assertFalse(sqsClient.receiveMessage(b -> b.queueUrl(excessQueueUrl).maxNumberOfMessages(1)).hasMessages());
     }
 
     @Test
@@ -166,6 +204,15 @@ class PaymentControllerIntegrationTest {
                         .content(objectMapper.writeValueAsString(paymentRequest)))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("errorMessage").value("Client ID dummy not found."));
+
+        var sqsClient = paymentSqsClient.getSqsClient();
+        var totalQueueUrl = paymentSqsClient.getFullPaymentQueueUrl();
+        var partialQueueUrl = paymentSqsClient.getPartialPaymentQueueUrl();
+        var excessQueueUrl = paymentSqsClient.getExcessPaymentQueueUrl();
+
+        assertFalse(sqsClient.receiveMessage(b -> b.queueUrl(totalQueueUrl).maxNumberOfMessages(1)).hasMessages());
+        assertFalse(sqsClient.receiveMessage(b -> b.queueUrl(partialQueueUrl).maxNumberOfMessages(1)).hasMessages());
+        assertFalse(sqsClient.receiveMessage(b -> b.queueUrl(excessQueueUrl).maxNumberOfMessages(1)).hasMessages());
     }
 
     @Test
@@ -184,5 +231,14 @@ class PaymentControllerIntegrationTest {
                         .content(objectMapper.writeValueAsString(paymentRequest)))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("errorMessage").value("Payment ID dummy not found."));
+
+        var sqsClient = paymentSqsClient.getSqsClient();
+        var totalQueueUrl = paymentSqsClient.getFullPaymentQueueUrl();
+        var partialQueueUrl = paymentSqsClient.getPartialPaymentQueueUrl();
+        var excessQueueUrl = paymentSqsClient.getExcessPaymentQueueUrl();
+
+        assertFalse(sqsClient.receiveMessage(b -> b.queueUrl(totalQueueUrl).maxNumberOfMessages(1)).hasMessages());
+        assertFalse(sqsClient.receiveMessage(b -> b.queueUrl(partialQueueUrl).maxNumberOfMessages(1)).hasMessages());
+        assertFalse(sqsClient.receiveMessage(b -> b.queueUrl(excessQueueUrl).maxNumberOfMessages(1)).hasMessages());
     }
 }
