@@ -1,4 +1,4 @@
-package br.com.desafio.controller;
+package br.com.desafio.domain.model.api;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

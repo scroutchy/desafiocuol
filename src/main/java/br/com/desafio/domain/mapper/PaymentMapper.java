@@ -1,7 +1,7 @@
 package br.com.desafio.domain.mapper;
 
-import br.com.desafio.controller.PaymentApiDto;
-import br.com.desafio.controller.PaymentItemApiDto;
+import br.com.desafio.domain.model.api.PaymentApiDto;
+import br.com.desafio.domain.model.api.PaymentItemApiDto;
 import br.com.desafio.domain.model.entity.Payment;
 import br.com.desafio.domain.model.entity.PaymentItem;
 import org.springframework.stereotype.Component;
