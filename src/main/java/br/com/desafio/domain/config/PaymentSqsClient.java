@@ -1,6 +1,8 @@
 package br.com.desafio.domain.config;
 
+import br.com.desafio.domain.mapper.PaymentMapper;
 import br.com.desafio.domain.model.entity.PaymentItem;
+import br.com.desafio.domain.model.sqs.PaymentItemSqsDto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -27,6 +29,8 @@ public class PaymentSqsClient {
     @Getter
     private final SqsClient sqsClient;
 
+    private final PaymentMapper paymentMapper;
+
     public void sendToQueueByPaymentStatus(PaymentItem paymentItem, String paymentStatus) {
         String queueUrl = switch (paymentStatus) {
             case "PARTIAL" -> partialPaymentQueueUrl;
@@ -34,13 +38,13 @@ public class PaymentSqsClient {
             case "EXCESS" -> excessPaymentQueueUrl;
             default -> throw new IllegalArgumentException("Status desconhecido");
         };
-        sendMessage(queueUrl, paymentItem.toString(), ObjectId.get().toHexString());
+        sendMessage(queueUrl, paymentMapper.toPaymentItemSqsDto(paymentItem), ObjectId.get().toHexString());
     }
 
-    private void sendMessage(String queueUrl, String messageBody, String messageGroupId) {
+    private void sendMessage(String queueUrl, PaymentItemSqsDto messageBody, String messageGroupId) {
         SendMessageRequest.Builder requestBuilder = SendMessageRequest.builder()
                 .queueUrl(queueUrl)
-                .messageBody(messageBody);
+                .messageBody(messageBody.toString());
 
         // Add MessageGroupId only if the queue is a FIFO queue
         if (queueUrl.endsWith(".fifo")) {

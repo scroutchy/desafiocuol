@@ -4,6 +4,7 @@ import br.com.desafio.domain.model.api.PaymentApiDto;
 import br.com.desafio.domain.model.api.PaymentItemApiDto;
 import br.com.desafio.domain.model.entity.Payment;
 import br.com.desafio.domain.model.entity.PaymentItem;
+import br.com.desafio.domain.model.sqs.PaymentItemSqsDto;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -45,6 +46,13 @@ public class PaymentMapper {
                 .paymentId(paymentItem.getPaymentId())
                 .paymentValue(paymentItem.getPaymentValue())
                 .paymentStatus(paymentItem.getPaymentStatus())
+                .build();
+    }
+
+    public PaymentItemSqsDto toPaymentItemSqsDto(PaymentItem paymentItem) {
+        return PaymentItemSqsDto.builder()
+                .paymentId(paymentItem.getPaymentId())
+                .paymentValue(paymentItem.getPaymentValue())
                 .build();
     }
 }

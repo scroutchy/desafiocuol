@@ -65,4 +65,18 @@ class PaymentMapperTest {
         assertEquals(BigDecimal.valueOf(100.00), payment.getPaymentItems().get(0).getPaymentValue());
         assertEquals("PAID", payment.getPaymentItems().get(0).getPaymentStatus());
     }
+
+    @Test
+    void testToPaymentItemSqsDto() {
+        var paymentItem = PaymentItem.builder()
+                .paymentId("123")
+                .paymentValue(BigDecimal.valueOf(100.00))
+                .paymentStatus("PAID")
+                .build();
+
+        var paymentItemSqsDto = paymentMapper.toPaymentItemSqsDto(paymentItem);
+        assertNotNull(paymentItemSqsDto);
+        assertEquals("123", paymentItemSqsDto.getPaymentId());
+        assertEquals(BigDecimal.valueOf(100.00), paymentItemSqsDto.getPaymentValue());
+    }
 }
