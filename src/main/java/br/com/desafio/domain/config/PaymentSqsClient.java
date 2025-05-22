@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
 
+import java.io.StringWriter;
+
 @Component
 @RequiredArgsConstructor
 @Data
@@ -37,12 +39,13 @@ public class PaymentSqsClient {
 
     public void sendToQueueByPaymentStatus(PaymentItem paymentItem, String paymentStatus) {
         String queueUrl = switch (paymentStatus) {
-            case "PARTIAL" -> partialPaymentQueueUrl;
             case "TOTAL" -> fullPaymentQueueUrl;
             case "EXCESS" -> excessPaymentQueueUrl;
-            default -> throw new IllegalArgumentException("Status desconhecido");
+            case "PARTIAL" -> partialPaymentQueueUrl;
+            default -> throw new IllegalArgumentException("Unknown status");
         };
-        sendMessage(queueUrl, paymentMapper.toPaymentItemSqsDto(paymentItem), ObjectId.get().toHexString());
+        var messageGroupId = ObjectId.get().toHexString();
+        sendMessage(queueUrl, paymentMapper.toPaymentItemSqsDto(paymentItem), messageGroupId);
     }
 
     @SneakyThrows
